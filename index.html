@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Pendidikan Indonesia</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(45deg, #6a11cb, #2575fc);
+            color: white;
+            text-align: center;
+        }
+        #quiz-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+        }
+        h1 {
+            font-size: 2em;
+        }
+        #question-box {
+            font-size: 1.5em;
+            margin: 20px 0;
+        }
+        .options {
+            margin: 10px 0;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 20px;
+        }
+        #time {
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="quiz-container">
+        <h1>Kuis Pendidikan Indonesia</h1>
+        <p>Oleh: Tegar Alfiansyah Hutabarat Ronaldinho</p>
+        <p id="time"></p>
+
+        <div id="question-box">Loading question...</div>
+        
+        <div class="options" id="option1"></div>
+        <div class="options" id="option2"></div>
+        <div class="options" id="option3"></div>
+        <div class="options" id="option4"></div>
+        
+        <button id="next-btn" style="display: none;" onclick="nextQuestion()">Next Question</button>
+        
+        <div class="result" id="score"></div>
+    </div>
+
+    <script>
+        const questions = [
+            { question: "Siapa Presiden Indonesia Ke-8?", options: ["Prabowo Subianto", "Joko Widodo", "Budi Gunawan", "Basuki Tjahaja Purnama"], answer: "Prabowo Subianto" },
+            { question: "Apa ibu kota Indonesia sekarang?", options: ["Jakarta", "Ibu Kota Nusantara", "Bali", "Surabaya"], answer: "Ibu Kota Nusantara" },
+            { question: "Pulau terbesar di Indonesia?", options: ["Sumatera", "Kalimantan", "Papua", "Sulawesi"], answer: "Kalimantan" },
+            { question: "Suku terbesar di Indonesia?", options: ["Jawa", "Sunda", "Batak", "Bali"], answer: "Jawa" },
+            { question: "Menteri Pendidikan dan Kebudayaan Indonesia tahun 2024?", options: ["Nadiem Makarim", "Zainuddin Amali", "Risma", "Budi Gunawan"], answer: "Nadiem Makarim" },
+            { question: "Apa bahasa resmi Indonesia?", options: ["Bahasa Jawa", "Bahasa Sunda", "Bahasa Indonesia", "Bahasa Bali"], answer: "Bahasa Indonesia" },
+            { question: "Apa warna bendera Indonesia?", options: ["Merah Putih", "Merah Biru", "Hijau Putih", "Putih Biru"], answer: "Merah Putih" },
+            { question: "Siapa pahlawan nasional yang dikenal sebagai Bapak Proklamator Indonesia?", options: ["Soekarno", "Sudirman", "Hatta", "Kartini"], answer: "Soekarno" },
+            { question: "Siapa penemu alat telepon?", options: ["Nikola Tesla", "Alexander Graham Bell", "Albert Einstein", "Thomas Edison"], answer: "Alexander Graham Bell" },
+            { question: "Tahun berapa Indonesia merdeka?", options: ["1945", "1950", "1955", "1960"], answer: "1945" },
+            { question: "Di mana lokasi Candi Borobudur?", options: ["Yogyakarta", "Surabaya", "Magelang", "Jakarta"], answer: "Magelang" },
+            { question: "Siapa tokoh yang dikenal dengan julukan Bapak Teknologi Indonesia?", options: ["BJ Habibie", "Soekarno", "Prabowo Subianto", "Megawati Soekarnoputri"], answer: "BJ Habibie" },
+            { question: "Di mana letak Pulau Komodo?", options: ["NTB", "NTT", "Jawa", "Sumatera"], answer: "NTT" },
+            { question: "Apa nama ibu kota Provinsi Bali?", options: ["Denpasar", "Bandung", "Surabaya", "Medan"], answer: "Denpasar" },
+            { question: "Siapa nama pendiri Universitas Indonesia?", options: ["Soekarno", "Raden Saleh", "Noto Soeroto", "Dr. Soedjatmoko"], answer: "Noto Soeroto" }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let timer;
+
+        const timeDisplay = document.getElementById("time");
+        const nextBtn = document.getElementById("next-btn");
+        const scoreDisplay = document.getElementById("score");
+
+        function startTimer() {
+            let countdown = 30;
+            timer = setInterval(function() {
+                timeDisplay.innerHTML = `Waktu: ${countdown}s`;
+                if (countdown === 0) {
+                    clearInterval(timer);
+                    nextBtn.style.display = "block";
+                }
+                countdown--;
+            }, 1000);
+        }
+
+        function loadQuestion() {
+            const question = questions[currentQuestionIndex];
+            document.getElementById("question-box").innerText = question.question;
+            const options = question.options;
+            options.forEach((option, index) => {
+                document.getElementById(`option${index + 1}`).innerText = option;
+                document.getElementById(`option${index + 1}`).onclick = function () {
+                    checkAnswer(option);
+                };
+            });
+            startTimer();
+        }
+
+        function checkAnswer(selectedOption) {
+            const correctAnswer = questions[currentQuestionIndex].answer;
+            if (selectedOption === correctAnswer) {
+                score++;
+                alert("Correct! 🎉");
+            } else {
+                alert("Wrong answer! ❌");
+            }
+            nextBtn.style.display = "block";
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                nextBtn.style.display = "none";
+                loadQuestion();
+            } else {
+                endQuiz();
+            }
+        }
+
+        function endQuiz() {
+            document.getElementById("question-box").innerHTML = `Kuis selesai! Skor Anda: ${score} dari ${questions.length}`;
+            scoreDisplay.innerHTML = `Terimakasih telah bermain!`;
+            nextBtn.style.display = "none";
+        }
+
+        window.onload = function () {
+            loadQuestion();
+        };
+    </script>
+</body>
+</html>
